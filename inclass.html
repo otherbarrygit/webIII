@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>GraderAide</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+</head>
+
+<body>
+  <div class="container" id="app">
+    <div class="row">
+      <div class="col-lg-6 col-lg-offset-3">
+        <h1>{{assignmentName}}</h1>
+        <h4>Points possible: {{totalPossible}}</h4>
+        <div v-for="(req, index) in reqs">
+          <!--<div class="row">-->
+          <!--    <div class="column"-->
+          <!--</div>-->
+          <input type="checkbox" name="rubric" v-bind:value="req" v-model="selectedReqs"> {{req.pts}} {{req.desc}}
+          <span v-on:click="removeRule(index)" class="glyphicon glyphicon-remove text-danger pull-right"></span><br>
+        </div>
+
+        <div v-if="actualPts < totalPossible" class="alert alert-warning" role="alert">
+          <span v-for="selectedReq in selectedReqs">{{selectedReq.pts}} {{selectedReq.desc}}<br/></span>
+          <hr> {{actualPts}}
+        </div>
+        <div v-else class="alert alert-success" role="alert">
+          <!--Good Job<br>-->
+          <span v-for="selectedReq in selectedReqs">{{selectedReq.pts}} {{selectedReq.desc}}<br/></span>
+          <hr> {{actualPts}}: points earned<br> Good Job!
+        </div>
+        {{reqs[0].desc | capitalize}}
+        <!--<input v-for="req in reqs" type="checkbox" name="rubric" v-bind:value="req" v-model="selectedReqs"> {{req.pts}} {{req.desc}}</input>-->
+
+      </div>
+    </div>
+  </div>
+  <script>
+    /* global Vue */
+
+
+    let app = new Vue({
+      el: '#app',
+      data: {
+        assignmentName: 'Lab 1',
+        totalPossible: 100,
+        reqs: [{
+            pts: -1,
+            desc: 'wrong file name'
+          },
+          {
+            pts: -5,
+            desc: 'magic number'
+          },
+          {
+            pts: +1,
+            desc: 'Extra credit'
+          }
+        ],
+        selectedReqs: []
+      },
+      filters: {
+        capitalize: function(str) { //TODO make all caps
+          if (!str) return '';
+          str = str.toString();
+          return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+      },
+
+      computed: {
+        actualPts: function() { //add up all selected pts and subtract from totalPts
+          return this.selectedReqs.reduce((acc, el) => acc + el.pts, this.totalPossible);
+          //   let sum = this.totalPossible;
+          //   for(selectedReq of this.selectedReqs){
+          //       sum += selectedReq.pts;
+          //   }
+          //   return sum;
+        }
+      },
+      methods:{
+        removeRule: function(i){
+          this.reqs.splice(i,1);
+        }
+      }
+    })
+
+    //THIS MILESTONE
+    //TODO show '+'' before positive Numbers
+    //REFACTOR rename reqs to rules
+
+    //FUTURE
+    //TODO display total points possible
+    //TODO sum up the points as actual point
+    //TODO green "full points" (or better) and yellow when points taken off
+
+    //TODO remove rule
+    //STRETCH bootstrap 4
+
+    //TODO add new rule
+
+    //TODO edit rule
+    //TODO create a new assignment
+    //TODO save (storing the json)
+    //TODO load (reading the json)
+    //TODO partial credit
+    //TODO late penalty percentage
+    //TODO tie to Canvas API
+    //TODO
+  </script>
+</body>
+
+</html>
